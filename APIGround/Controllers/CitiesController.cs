@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
+using System.Linq;
 
 namespace APIGround.Controllers
 {
@@ -11,11 +10,19 @@ namespace APIGround.Controllers
         [HttpGet]
         public JsonResult GetCities()
         {
-            return new JsonResult(new List<Object>()
+            return new JsonResult(CitiesDataStore.Current);
+        }
+
+        [Route("City/{id}")]
+        [HttpGet]
+        public IActionResult GetCity(int id)
+        {
+            var cityToReturn = CitiesDataStore.Current.cities.FirstOrDefault(x => x.Id == id);
+            if (cityToReturn == null)
             {
-                new {id= 1, name= "Dhaka"},
-                new {id = 2, name = "Rajshahi"}
-            });
+                return NotFound();
+            }
+            return Ok(cityToReturn);
         }
     }
 }
