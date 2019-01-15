@@ -1,5 +1,6 @@
 ﻿using APIGround.Models.Read;
 using APIGround.Models.Write;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 
@@ -101,7 +102,7 @@ namespace APIGround.Controllers
         {
             if (poi == null)
             {
-                return BadRequest();
+                return BadRequest(); 
             }
 
             var city = CitiesDataStore.Current.cities.FirstOrDefault(x => x.Id == cityId);
@@ -123,6 +124,47 @@ namespace APIGround.Controllers
             var poiToUpdate = city.POI.FirstOrDefault(x => x.Id == poiId);
             poiToUpdate.Name = poi.Name;
             poiToUpdate.Description = poi.Description;
+
+            return NoContent();
+        }
+
+        //Good resource on Patch: https://dotnetcoretutorials.com/2017/11/29/json-patch-asp-net-core/
+        [HttpPatch("City/{cityId}/poi/{poiId}")]
+        public IActionResult PartialUpdatePOI(int cityId, int poiId, [FromBody] JsonPatchDocument<PointOfInterestCreationDTO> patchDoc)
+        {
+            if (patchDoc == null)
+            {
+                return BadRequest();
+            }
+
+            var city = CitiesDataStore.Current.cities.FirstOrDefault(x => x.Id == cityId);
+            if (city == null)
+            {
+                return NotFound();
+            }
+
+            var poiToUpdate = city.POI.FirstOrDefault(x => x.Id == poiId);
+            if (poiToUpdate == null)
+            {
+                return NotFound();
+            }
+
+            var poiToPatch = new PointOfInterestCreationDTO()
+            {
+                Name = poiToUpdate.Name,
+                Description = poiToUpdate.Description
+            };
+
+            patchDoc.ApplyTo(poiToPatch, ModelState);
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            //map the patched obj with the actual object and store
+            poiToUpdate.Name = poiToPatch.Name;
+            poiToUpdate.Description = poiToPatch.Description;
 
             return NoContent();
         }
