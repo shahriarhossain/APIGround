@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Serialization;
+using NLog.Extensions.Logging;
 
 namespace APIGround
 {
@@ -31,6 +32,9 @@ namespace APIGround
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             loggerFactory.AddConsole();
+
+            //Adding NLog
+            loggerFactory.AddNLog(); //loggerFactory.AddProvider(new NLog.Extensions.Logging.NLogLoggerProvider());
 
             if (env.IsDevelopment())
             {
