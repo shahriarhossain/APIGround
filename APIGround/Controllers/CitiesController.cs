@@ -2,6 +2,7 @@
 using APIGround.Models.Write;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System.Linq;
 
 namespace APIGround.Controllers
@@ -9,6 +10,11 @@ namespace APIGround.Controllers
     [Route("api/[controller]")]
     public class CitiesController : Controller
     {
+        private ILogger<CitiesController> _logger;
+        public CitiesController(ILogger<CitiesController> logger)
+        {
+            _logger = logger;
+        }
         [Route("GetCities")]
         [HttpGet]
         public JsonResult GetCities()
@@ -20,12 +26,21 @@ namespace APIGround.Controllers
         [HttpGet]
         public IActionResult GetCity(int id)
         {
-            var cityToReturn = CitiesDataStore.Current.cities.FirstOrDefault(x => x.Id == id);
-            if (cityToReturn == null)
+            try
             {
-                return NotFound();
+                var cityToReturn = CitiesDataStore.Current.cities.FirstOrDefault(x => x.Id == id);
+                if (cityToReturn == null)
+                {
+                    _logger.LogInformation($"City with id {id} wasn't found.");
+                    return NotFound();
+                }
+                return Ok(cityToReturn);
             }
-            return Ok(cityToReturn);
+            catch (System.Exception ex)
+            {
+                _logger.LogCritical($"Critical Exception encountered", ex);
+                return StatusCode(500, "A problem happened while handling your request");
+            }
         }
 
         [Route("City/{cityId}/poi")]
