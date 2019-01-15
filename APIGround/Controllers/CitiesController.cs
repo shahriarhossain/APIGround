@@ -168,5 +168,21 @@ namespace APIGround.Controllers
 
             return NoContent();
         }
+
+        [HttpDelete("City/{cityId}/poi/{poiId}")]
+        public IActionResult DeletePOI(int cityId, int poiId)
+        {
+            var city = CitiesDataStore.Current.cities.FirstOrDefault(x => x.Id == cityId);
+            if (city == null)
+            {
+                return NotFound();
+            }
+
+            var poiToDelete = city.POI.FirstOrDefault(x => x.Id == poiId);
+
+            city.POI.Remove(poiToDelete);
+
+            return NoContent();
+        }
     }
 }
