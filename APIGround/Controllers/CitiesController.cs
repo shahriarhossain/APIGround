@@ -96,5 +96,35 @@ namespace APIGround.Controllers
             return CreatedAtRoute("GetPoiRoute", new { cityId = cityId, pId = poiObj.Id }, poiObj);
         }
 
+        [HttpPut("City/{cityId}/poi/{poiId}")]
+        public IActionResult UpdatePOI(int cityId, int poiId, [FromBody] PointOfInterestCreationDTO poi)
+        {
+            if (poi == null)
+            {
+                return BadRequest();
+            }
+
+            var city = CitiesDataStore.Current.cities.FirstOrDefault(x => x.Id == cityId);
+            if (city == null)
+            {
+                return NotFound();
+            }
+
+            if (poi.Description == poi.Name)
+            {
+                ModelState.AddModelError("Description", "Name and Description should be different");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var poiToUpdate = city.POI.FirstOrDefault(x => x.Id == poiId);
+            poiToUpdate.Name = poi.Name;
+            poiToUpdate.Description = poi.Description;
+
+            return NoContent();
+        }
     }
 }
