@@ -1,4 +1,4 @@
-﻿using APIGround.Models;
+﻿using APIGround.Models.Read;
 using System.Collections.Generic;
 
 namespace APIGround

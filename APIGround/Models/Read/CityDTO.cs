@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace APIGround.Models
+namespace APIGround.Models.Read
 {
     public class CityDTO
     {

@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using APIGround.Models.Read;
+using APIGround.Models.Write;
+using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 
 namespace APIGround.Controllers
@@ -58,5 +60,31 @@ namespace APIGround.Controllers
 
             return Ok(poiToReturn);
         }
+
+        [HttpPost("City/{cityId}/poi")]
+        public IActionResult CreatePOI(int cityId, [FromBody] PointOfInterestCreationDTO poi )
+        {
+            if(poi == null)
+            {
+                return BadRequest();
+            }
+
+            var city = CitiesDataStore.Current.cities.FirstOrDefault(x => x.Id == cityId);
+            if (city == null)
+            {
+                return NotFound();
+            }
+
+            PointOfInterestDTO poiObj = new PointOfInterestDTO()
+            {
+                Id = city.NumberOfPointOfInterst + 1, //temporary
+                Name = poi.Name,
+                Description = poi.Description
+            };
+            city.POI.Add(poiObj);
+
+            return Ok();
+        }
+
     }
 }

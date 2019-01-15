@@ -1,8 +1,7 @@
-﻿namespace APIGround.Models
+﻿namespace APIGround.Models.Write
 {
-    public class PointOfInterestDTO
+    public class PointOfInterestCreationDTO
     {
-        public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
     }
