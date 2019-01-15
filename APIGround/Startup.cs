@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json.Serialization;
 
@@ -12,6 +13,10 @@ namespace APIGround
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc()
+                .AddMvcOptions(o =>
+                {
+                    o.OutputFormatters.Add(new XmlDataContractSerializerOutputFormatter());
+                })
                 .AddJsonOptions(o=> {
                     if (o.SerializerSettings.ContractResolver != null)
                     {
