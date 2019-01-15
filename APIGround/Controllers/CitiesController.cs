@@ -24,5 +24,39 @@ namespace APIGround.Controllers
             }
             return Ok(cityToReturn);
         }
+
+        [Route("City/{cityId}/poi")]
+        [HttpGet]
+        public IActionResult GetPOI(int cityId)
+        {
+            var cityToReturn = CitiesDataStore.Current.cities.FirstOrDefault(x => x.Id == cityId);
+            if (cityToReturn == null)
+            {
+                return NotFound();
+            }
+
+            var poiToReturn = cityToReturn.POI;
+
+            return Ok(poiToReturn);
+        }
+
+        [Route("City/{cityId}/poi/{pId}")]
+        [HttpGet]
+        public IActionResult GetPOI(int cityId, int pId)
+        {
+            var cityToReturn = CitiesDataStore.Current.cities.FirstOrDefault(x => x.Id == cityId);
+            if (cityToReturn == null)
+            {
+                return NotFound();
+            }
+
+            var poiToReturn = cityToReturn.POI.Where(x => x.Id == pId);
+            if(poiToReturn == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(poiToReturn);
+        }
     }
 }
