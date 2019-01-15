@@ -75,6 +75,16 @@ namespace APIGround.Controllers
                 return NotFound();
             }
 
+            if (poi.Description == poi.Name)
+            {
+                ModelState.AddModelError("Description", "Name and Description should be different");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             PointOfInterestDTO poiObj = new PointOfInterestDTO()
             {
                 Id = city.NumberOfPointOfInterst + 1, //temporary
