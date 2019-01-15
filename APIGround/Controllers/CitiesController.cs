@@ -42,7 +42,7 @@ namespace APIGround.Controllers
             return Ok(poiToReturn);
         }
 
-        [Route("City/{cityId}/poi/{pId}")]
+        [Route("City/{cityId}/poi/{pId}", Name ="GetPoiRoute")]
         [HttpGet]
         public IActionResult GetPOI(int cityId, int pId)
         {
@@ -83,7 +83,7 @@ namespace APIGround.Controllers
             };
             city.POI.Add(poiObj);
 
-            return Ok();
+            return CreatedAtRoute("GetPoiRoute", new { cityId = cityId, pId = poiObj.Id }, poiObj);
         }
 
     }
