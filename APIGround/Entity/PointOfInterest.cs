@@ -10,7 +10,7 @@ namespace APIGround.Entity
         public int Id { get; set; }
 
         [Required]
-        [MaxLength(15)]
+        [MaxLength(20)]
         public string Name { get; set; }
 
         [MaxLength(50)]

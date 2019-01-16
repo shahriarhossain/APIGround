@@ -7,7 +7,7 @@ namespace APIGround.Context
     {
         public CityContext(DbContextOptions<CityContext> dbContextOptions) :base (dbContextOptions)
         {
-            Database.EnsureCreated();
+            Database.Migrate();
         }
 
         public DbSet<City> Cities { get; set; }
