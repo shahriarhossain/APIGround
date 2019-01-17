@@ -1,4 +1,5 @@
 ﻿using APIGround.Context;
+using APIGround.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Formatters;
@@ -38,6 +39,7 @@ namespace APIGround
                 });
 
             services.AddDbContext<CityContext>(o => o.UseSqlServer(Configuration.GetConnectionString("CityDatabase")));
+            services.AddScoped<ICityRepository, CityRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

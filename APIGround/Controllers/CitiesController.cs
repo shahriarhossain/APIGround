@@ -1,6 +1,7 @@
 ﻿using APIGround.Context;
 using APIGround.Models.Read;
 using APIGround.Models.Write;
+using APIGround.Repository;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -12,15 +13,24 @@ namespace APIGround.Controllers
     public class CitiesController : Controller
     {
         private ILogger<CitiesController> _logger;
-        public CitiesController(ILogger<CitiesController> logger)
+        private CityRepository _cityRepository;
+
+        public CitiesController(ILogger<CitiesController> logger, CityRepository cityRepository)
         {
             _logger = logger;
+            _cityRepository = cityRepository;
         }
+
         [Route("GetCities")]
         [HttpGet]
-        public JsonResult GetCities()
+        public IActionResult GetCities()
         {
-            return new JsonResult(CitiesDataStore.Current);
+            var cities = _cityRepository.GetAllCity();
+            if(cities == null)
+            {
+                return NotFound();
+            }
+            return Ok(cities );
         }
 
         [Route("City/{id}")]
