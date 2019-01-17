@@ -13,9 +13,9 @@ namespace APIGround.Controllers
     public class CitiesController : Controller
     {
         private ILogger<CitiesController> _logger;
-        private CityRepository _cityRepository;
+        private ICityRepository _cityRepository;
 
-        public CitiesController(ILogger<CitiesController> logger, CityRepository cityRepository)
+        public CitiesController(ILogger<CitiesController> logger, ICityRepository cityRepository)
         {
             _logger = logger;
             _cityRepository = cityRepository;
