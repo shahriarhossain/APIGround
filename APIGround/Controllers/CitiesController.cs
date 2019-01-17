@@ -2,6 +2,7 @@
 using APIGround.Models.Read;
 using APIGround.Models.Write;
 using APIGround.Repository;
+using AutoMapper;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -39,7 +40,8 @@ namespace APIGround.Controllers
         {
             try
             {
-                var cityToReturn = CitiesDataStore.Current.cities.FirstOrDefault(x => x.Id == id);
+                var city = _cityRepository.GetCity(id);
+                var cityToReturn = Mapper.Map<LimitedCityInfoDTO>(city);
                 if (cityToReturn == null)
                 {
                     _logger.LogInformation($"City with id {id} wasn't found.");

@@ -1,4 +1,6 @@
 ﻿using APIGround.Context;
+using APIGround.Entity;
+using APIGround.Models.Read;
 using APIGround.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -59,6 +61,10 @@ namespace APIGround
                 app.UseExceptionHandler();
             }
             //app.UseStatusCodePages();
+            AutoMapper.Mapper.Initialize(cfg =>
+            {
+                cfg.CreateMap<City, LimitedCityInfoDTO>();
+            });
             app.UseMvc();
         }
     }
