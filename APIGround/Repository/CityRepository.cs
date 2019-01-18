@@ -17,6 +17,11 @@ namespace APIGround.Repository
             _cityContext = cityContext;
         }
 
+        public bool CityExists(int id)
+        {
+            return _cityContext.Cities.Any(x => x.Id == id);
+        }
+
         public void CreateCity(City city)
         {
             _cityContext.Cities.Add(city);

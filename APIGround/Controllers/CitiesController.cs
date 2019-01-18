@@ -40,13 +40,15 @@ namespace APIGround.Controllers
         {
             try
             {
-                var city = _cityRepository.GetCity(id);
-                var cityToReturn = Mapper.Map<LimitedCityInfoDTO>(city);
-                if (cityToReturn == null)
+                if (!_cityRepository.CityExists(id))
                 {
                     _logger.LogInformation($"City with id {id} wasn't found.");
                     return NotFound();
                 }
+
+                var city = _cityRepository.GetCity(id);
+                var cityToReturn = Mapper.Map<LimitedCityInfoDTO>(city);
+
                 return Ok(cityToReturn);
             }
             catch (System.Exception ex)
@@ -82,13 +84,12 @@ namespace APIGround.Controllers
         [HttpGet]
         public IActionResult GetPOI(int cityId)
         {
-            var cityToReturn = CitiesDataStore.Current.cities.FirstOrDefault(x => x.Id == cityId);
-            if (cityToReturn == null)
+            if (!_cityRepository.CityExists(cityId))
             {
                 return NotFound();
             }
 
-            var poiToReturn = cityToReturn.POI;
+            var poiToReturn = CitiesDataStore.Current.cities.FirstOrDefault(x => x.Id == cityId).POI;
 
             return Ok(poiToReturn);
         }
@@ -97,13 +98,13 @@ namespace APIGround.Controllers
         [HttpGet]
         public IActionResult GetPOI(int cityId, int pId)
         {
-            var cityToReturn = CitiesDataStore.Current.cities.FirstOrDefault(x => x.Id == cityId);
-            if (cityToReturn == null)
+            if (!_cityRepository.CityExists(cityId))
             {
                 return NotFound();
             }
 
-            var poiToReturn = cityToReturn.POI.Where(x => x.Id == pId);
+            var poiToReturn = CitiesDataStore.Current.cities.FirstOrDefault(x => x.Id == cityId).POI.Where(x => x.Id == pId);
+
             if(poiToReturn == null)
             {
                 return NotFound();
@@ -120,8 +121,7 @@ namespace APIGround.Controllers
                 return BadRequest();
             }
 
-            var city = CitiesDataStore.Current.cities.FirstOrDefault(x => x.Id == cityId);
-            if (city == null)
+            if (!_cityRepository.CityExists(cityId))
             {
                 return NotFound();
             }
@@ -136,12 +136,15 @@ namespace APIGround.Controllers
                 return BadRequest(ModelState);
             }
 
+            var city = CitiesDataStore.Current.cities.FirstOrDefault(x => x.Id == cityId);
+
             PointOfInterestDTO poiObj = new PointOfInterestDTO()
             {
                 Id = city.NumberOfPointOfInterst + 1, //temporary
                 Name = poi.Name,
                 Description = poi.Description
             };
+
             city.POI.Add(poiObj);
 
             return CreatedAtRoute("GetPoiRoute", new { cityId = cityId, pId = poiObj.Id }, poiObj);
@@ -155,8 +158,7 @@ namespace APIGround.Controllers
                 return BadRequest(); 
             }
 
-            var city = CitiesDataStore.Current.cities.FirstOrDefault(x => x.Id == cityId);
-            if (city == null)
+            if (!_cityRepository.CityExists(cityId))
             {
                 return NotFound();
             }
@@ -171,6 +173,7 @@ namespace APIGround.Controllers
                 return BadRequest(ModelState);
             }
 
+            var city = CitiesDataStore.Current.cities.FirstOrDefault(x => x.Id == cityId);
             var poiToUpdate = city.POI.FirstOrDefault(x => x.Id == poiId);
             poiToUpdate.Name = poi.Name;
             poiToUpdate.Description = poi.Description;
@@ -187,12 +190,12 @@ namespace APIGround.Controllers
                 return BadRequest();
             }
 
-            var city = CitiesDataStore.Current.cities.FirstOrDefault(x => x.Id == cityId);
-            if (city == null)
+            if (!_cityRepository.CityExists(cityId))
             {
                 return NotFound();
             }
 
+            var city = CitiesDataStore.Current.cities.FirstOrDefault(x => x.Id == cityId);
             var poiToUpdate = city.POI.FirstOrDefault(x => x.Id == poiId);
             if (poiToUpdate == null)
             {
@@ -222,11 +225,12 @@ namespace APIGround.Controllers
         [HttpDelete("City/{cityId}/poi/{poiId}")]
         public IActionResult DeletePOI(int cityId, int poiId)
         {
-            var city = CitiesDataStore.Current.cities.FirstOrDefault(x => x.Id == cityId);
-            if (city == null)
+            if (!_cityRepository.CityExists(cityId))
             {
                 return NotFound();
             }
+
+            var city = CitiesDataStore.Current.cities.FirstOrDefault(x => x.Id == cityId);
 
             var poiToDelete = city.POI.FirstOrDefault(x => x.Id == poiId);
 
