@@ -16,6 +16,12 @@ namespace APIGround.Repository
         {
             _cityContext = cityContext;
         }
+
+        public void CreateCity(City city)
+        {
+            _cityContext.Cities.Add(city);
+        }
+
         public IEnumerable<City> GetAllCity()
         {
             return _cityContext.Cities.ToList();
@@ -24,6 +30,11 @@ namespace APIGround.Repository
         public City GetCity(int id)
         {
             return _cityContext.Cities.FirstOrDefault(c => c.Id == id);
+        }
+
+        public bool Save()
+        {
+            return (_cityContext.SaveChanges() >= 0);
         }
     }
 }

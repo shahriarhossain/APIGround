@@ -34,7 +34,7 @@ namespace APIGround.Controllers
             return Ok(cities );
         }
 
-        [Route("City/{id}")]
+        [Route("City/{id}", Name = "GetCity")]
         [HttpGet]
         public IActionResult GetCity(int id)
         {
@@ -48,6 +48,28 @@ namespace APIGround.Controllers
                     return NotFound();
                 }
                 return Ok(cityToReturn);
+            }
+            catch (System.Exception ex)
+            {
+                _logger.LogCritical($"Critical Exception encountered", ex);
+                return StatusCode(500, "A problem happened while handling your request");
+            }
+        }
+
+        [Route("City")]
+        [HttpPost]
+        public IActionResult CreateCity([FromBody]CityCreationDTO city)
+        {
+            try
+            {
+                var cityToSave = Mapper.Map<Entity.City>(city);
+                _cityRepository.CreateCity(cityToSave);
+                bool resp = _cityRepository.Save();
+                if (resp)
+                {
+                    return CreatedAtRoute("GetCity", new { id = cityToSave.Id }, city);
+                }
+                return BadRequest();
             }
             catch (System.Exception ex)
             {

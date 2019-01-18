@@ -7,5 +7,7 @@ namespace APIGround.Repository
     {
         IEnumerable<City> GetAllCity();
         City GetCity(int id);
+        void CreateCity(City city);
+        bool Save();
     }
 }

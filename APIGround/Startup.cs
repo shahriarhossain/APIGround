@@ -1,6 +1,7 @@
 ﻿using APIGround.Context;
 using APIGround.Entity;
 using APIGround.Models.Read;
+using APIGround.Models.Write;
 using APIGround.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -64,6 +65,7 @@ namespace APIGround
             AutoMapper.Mapper.Initialize(cfg =>
             {
                 cfg.CreateMap<City, LimitedCityInfoDTO>();
+                cfg.CreateMap<CityCreationDTO, City>();
             });
             app.UseMvc();
         }
